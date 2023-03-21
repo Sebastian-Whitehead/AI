@@ -9,6 +9,7 @@ def main():
     population = [Creature() for _ in range(Settings.populationSize)]
     walls = []
 
+
     pygame.init()
     screen = pygame.display.set_mode([Settings.screenSize] * 2)  # Set up the drawing window
 

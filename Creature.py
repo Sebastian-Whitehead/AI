@@ -5,6 +5,8 @@ import NeuralNetwork
 
 
 class Creature:
+    img = pygame.image.load(Settings.creatureImg)
+    img = pygame.transform.scale(img, [Settings.creatureSize] * 2)
 
     def __init__(self, location: list = None, size: int = Settings.creatureSize, color: list = None):
         randomLocation = np.random.randint(0, Settings.screenSize, size=(2))
@@ -35,6 +37,7 @@ class Creature:
         if not self.alive: return
         # pygame.draw.rect(screen, (255, 0, 0), self.collider) # Show collider
         pygame.draw.circle(screen, self.color, self.location, self.size)  # Show creature
+        if self.img == None: screen.blit(self.img, self.location)
 
     def eat(self, foodList: list):
         for food in foodList:
