@@ -2,7 +2,7 @@
 screenSize = 750
 
 # Genetic attributes
-populationSize = 1
+populationSize = 10
 
 # Creature attributes
 creatureSize = 15
