@@ -52,4 +52,4 @@ class NeuralNetwork:
 if __name__ == "__main__":
     nn = NeuralNetwork()
     print(nn)
-    nn.calculateNetwork([0.2, 0.1])
+    print(nn.calculateNetwork([0.2, 0.1]))

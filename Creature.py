@@ -14,6 +14,7 @@ class Creature:
         self.color = color if color else randomColor
         self.neuralNetwork = NeuralNetwork.NeuralNetwork()
         self.alive = True
+        self.action = np.random.random(2) * 2 - 1
 
     def update(self):
         if not self.alive: return
@@ -51,11 +52,11 @@ class Creature:
                 self.closestFood = food
                 self.closestDistance = distance
 
-        self.eyes = []
-
         foodX, foodY = self.closestFood.location[0], self.closestFood.location[1]
         foodX, foodY = foodX + foodSize / 2, foodY + foodSize / 2
         pygame.draw.line(screen, (0, 0, 0), self.location, (foodX, foodY))
+
+        self.action = self.neuralNetwork.calculateNetwork([foodX, foodY])
 
     def eat(self, foodList: list):
         for food in foodList:
@@ -69,15 +70,12 @@ class Creature:
             if not checkWallCollision: continue
             self.alive = False
 
-    def moveRandom(self):
-        randomVector = np.random.random(2) * 2 - 1
-        newLocation = np.add(self.location, randomVector)
-        self.location = newLocation
-
     def move(self):
-        self.moveRandom()
-        pass
-
+        # TODO: MAP VALUES
+        x = np.sin(self.action[0]) * self.action[1]
+        y = np.cos(self.action[0]) * self.action[1]
+        newLocation = [x, y]
+        self.location = np.add(self.location, newLocation)
 
 if __name__ == "__main__":
-    Creature()
+    creature = Creature()
