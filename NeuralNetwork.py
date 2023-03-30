@@ -2,41 +2,37 @@ import numpy as np
 
 
 class NeuralNetwork:
-    inputNeurons = 2
-    hiddenLayers = 2
-    hiddenNeurons = 3
-    outputNeurons = 2
-
-    artic = [2, 3, 3, 2]
+    structure = [2, 3, 2]
 
     def __init__(self):
+        self.construct()
 
-        self.make()
-
-    def make(self):
+    def construct(self):
         self.layers = list()
-        self.weights = list()
-        self.biases = list()
 
-        for i, test in enumerate(self.artic):
-            if i >= len(self.artic) - 2: break
-            neurons = self.artic[i + 1]
-            weights = np.random.random((neurons, test))
-            self.weights.append(weights)
+        for i, startNeurons in enumerate(self.structure):
+            layer = list()
+            if i >= len(self.structure) - 1: break
+            neurons = self.structure[i + 1]
+            weights = np.random.random((neurons, startNeurons))
+            layer.append(weights)
             bias = np.random.random((neurons, 1))
-            self.biases.append(bias)
+            layer.append(bias)
+            self.layers.append(layer)
 
-    def see(self, eyes):
-        pass
+    def calculateNetwork(self, inputValues):
+        layerValues = inputValues
+        for layer in self.layers:
+            weights, bias = layer[0], layer[1]
+            layerValues = self.calculateLayer(layerValues, weights, bias)
+        return layerValues
 
-    def calculate(self, input, weights, bias):
-        layer = np.multiply(input, weights)
+    def calculateLayer(self, inputValues, weights, bias):
+        layer = np.multiply(inputValues, weights)
         layer = np.add(layer, bias)
         layer = np.sum(layer, axis=1)
         layer = np.transpose(layer)
         layer = 1 / (1 + np.exp(-layer))
-
-        self.layers.append(layer)
 
         return layer
 
@@ -45,16 +41,15 @@ class NeuralNetwork:
             print(layer)
 
     def __str__(self):
-        for weights, bias in zip(self.weights, self.biases):
-            print("*")
+        for weights, bias in self.layers:
+            print("Weights")
             print(weights)
-            print("+")
+            print("Bias")
             print(bias)
-            print("=")
-            #print(layer)
         return ""
 
 
 if __name__ == "__main__":
-    neuralNetwork = NeuralNetwork()
-    print(neuralNetwork)
+    nn = NeuralNetwork()
+    print(nn)
+    nn.calculateNetwork([0.2, 0.1])
