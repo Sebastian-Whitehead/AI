@@ -36,6 +36,27 @@ class Creature:
         # pygame.draw.rect(screen, (255, 0, 0), self.collider) # Show collider
         pygame.draw.circle(screen, self.color, self.location, self.size)  # Show creature
 
+    def eyes(self, foodList: list, screen):
+        self.closestFood = self.closestDistance = None
+        foodSize = foodList[0].size[0]
+        for food in foodList:
+            if food.eaten: continue
+            foodX, foodY = food.location[0], food.location[1]
+            foodX, foodY = foodX + foodSize / 2, foodY + foodSize / 2
+            creatureX, creatureY = self.location[0], self.location[1]
+            dx, dy = foodX - creatureX, foodY - creatureY
+            distance = np.sqrt(np.power(dx, 2) + np.power(dy, 2))
+
+            if self.closestDistance == None or distance < self.closestDistance:
+                self.closestFood = food
+                self.closestDistance = distance
+
+        self.eyes = []
+
+        foodX, foodY = self.closestFood.location[0], self.closestFood.location[1]
+        foodX, foodY = foodX + foodSize / 2, foodY + foodSize / 2
+        pygame.draw.line(screen, (0, 0, 0), self.location, (foodX, foodY))
+
     def eat(self, foodList: list):
         for food in foodList:
             checkFoodCollision = pygame.Rect.colliderect(self.collider, food.rect)

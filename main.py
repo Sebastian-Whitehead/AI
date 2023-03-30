@@ -33,6 +33,7 @@ def main():
         for creature in population:
             creature.update()
             creature.collide(walls)
+            creature.eyes(foodList, screen)
             creature.eat(foodList)
             creature.draw(screen)
 
