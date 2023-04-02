@@ -20,14 +20,16 @@ class Creature:
         if not self.alive: return
         # self.location = list(pygame.mouse.get_pos()) # Set position to mouse
         self.move()
+        self._BoundInsideFrame()
+        self._BoxCollider()
 
-        # Bound in frame
+    def _BoundInsideFrame(self):
         self.location[0] = max(self.location[0], 0)  # West border
         self.location[0] = min(self.location[0], Settings.screenSize)  # East border
         self.location[1] = max(self.location[1], 0)  # Nord border
         self.location[1] = min(self.location[1], Settings.screenSize)  # South border
 
-        # Make box collider
+    def _BoxCollider(self):
         colliderSize = [self.size * 2] * 2
         colliderLocation = np.subtract(self.location, colliderSize[0] / 2)
         self.collider = pygame.Rect(colliderLocation, colliderSize)
