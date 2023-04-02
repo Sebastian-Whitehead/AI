@@ -38,7 +38,7 @@ class Creature:
         pygame.draw.circle(screen, self.color, self.location, self.size)  # Show creature
 
     def eyes(self, foodList: list, screen):
-        self.closestFood = self.closestDistance = None
+        targetFood = targetDistance = None
         foodSize = foodList[0].size[0]
         for food in foodList:
             if food.eaten: continue
@@ -48,15 +48,19 @@ class Creature:
             dx, dy = foodX - creatureX, foodY - creatureY
             distance = np.sqrt(np.power(dx, 2) + np.power(dy, 2))
 
-            if self.closestDistance == None or distance < self.closestDistance:
-                self.closestFood = food
-                self.closestDistance = distance
+            if targetDistance == None or distance < targetDistance:
+                targetFood = food
+                targetDistance = distance
 
-        foodX, foodY = self.closestFood.location[0], self.closestFood.location[1]
+        # Draw line from Creature to Food
+        foodX, foodY = targetFood.location[0], targetFood.location[1]
         foodX, foodY = foodX + foodSize / 2, foodY + foodSize / 2
         pygame.draw.line(screen, (0, 0, 0), self.location, (foodX, foodY))
 
-        self.action = self.neuralNetwork.calculateNetwork([foodX, foodY])
+        targetDirection = 0 # Calculate direction to food
+        targetFood = [targetDirection, targetDistance] 
+        
+        self.action = self.neuralNetwork.calculateNetwork(targetFood)
 
     def eat(self, foodList: list):
         for food in foodList:
