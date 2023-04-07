@@ -2,10 +2,10 @@
 screenSize = 750
 
 # Genetic attributes
-populationSize = 1
+populationSize = 50
 
 # Creature attributes
-creatureSize = 15
+creatureSize = 10
 maxSpeed = 1
 
 # Food attributes

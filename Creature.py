@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import Settings
 import pygame
@@ -7,8 +9,10 @@ import NeuralNetwork
 class Creature:
 
     def __init__(self, location: list = None, size: int = Settings.creatureSize, color: list = None):
-        randomLocation = np.random.randint(0, Settings.screenSize, size=(2))
-        self.location = location if location else randomLocation
+        if location:
+            self.location = location
+        else:
+            self.RandomLocation()
         self.size = size
         randomColor = np.random.randint(0, 255, size=(3))
         self.color = color if color else randomColor
@@ -16,8 +20,11 @@ class Creature:
         self.alive = True
         self.action = np.random.random(2) * 2 - 1
 
+    def RandomLocation(self):
+        randomLocation = np.random.randint(0, Settings.screenSize, size=(2))
+        self.location = randomLocation
+
     def update(self):
-        if not self.alive: return
         # self.location = list(pygame.mouse.get_pos()) # Set position to mouse
         self.move()
         self._BoundInsideFrame()
@@ -35,7 +42,6 @@ class Creature:
         self.collider = pygame.Rect(colliderLocation, colliderSize)
 
     def draw(self, screen):
-        if not self.alive: return
         # pygame.draw.rect(screen, (255, 0, 0), self.collider) # Show collider
         pygame.draw.circle(screen, self.color, self.location, self.size)  # Show creature
 
@@ -57,11 +63,11 @@ class Creature:
         # Draw line from Creature to Food
         foodX, foodY = targetFood.location[0], targetFood.location[1]
         foodX, foodY = foodX + foodSize / 2, foodY + foodSize / 2
-        pygame.draw.line(screen, (0, 0, 0), self.location, (foodX, foodY))
+        pygame.draw.line(screen, [200] * 3, self.location, (foodX, foodY))
 
-        targetDirection = 0 # Calculate direction to food
-        targetFood = [targetDirection, targetDistance] 
-        
+        targetDirection = 0  # Calculate direction to food
+        targetFood = [targetDirection, targetDistance]
+
         self.action = self.neuralNetwork.calculateNetwork(targetFood)
 
     def eat(self, foodList: list):
@@ -77,11 +83,13 @@ class Creature:
             self.alive = False
 
     def move(self):
-        # TODO: MAP VALUES
-        x = np.sin(self.action[0]) * self.action[1]
-        y = np.cos(self.action[0]) * self.action[1]
+        direction = self.action[0] * math.pi
+        speed = self.action[1]
+        x = np.sin(direction) * speed
+        y = np.cos(direction) * speed
         newLocation = [x, y]
         self.location = np.add(self.location, newLocation)
+
 
 if __name__ == "__main__":
     creature = Creature()
