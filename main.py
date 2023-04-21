@@ -8,15 +8,13 @@ import GeneticAlgorithm
 
 
 def Simulation(screen, generation, population, simSec):
-    #for creature in population: creature.RandomLocation()
-    center = [Settings.screenSize / 2, Settings.screenSize / 2]
-    #for creature in population: creature.location = center
     foodList = [Food() for _ in range(Settings.foodCount)]
     walls = []
     font = pygame.font.Font('freesansbold.ttf', 32)
 
     # Run until the user asks to quit
     running = True
+    TotElapsedFrames = 0
     while running:
 
         # Did the user click the window close button?
@@ -41,22 +39,19 @@ def Simulation(screen, generation, population, simSec):
             creature.draw(screen)
             creature.CalculateFitness()
 
-        genText = font.render(f'Size: {len(population)}', True, (0, 0, 0))
-        screen.blit(genText, (20, 20))
-
-        genText = font.render(f'Gen: {generation}', True, (0, 0, 0))
-        screen.blit(genText, (20, 60))
-
-        SecondsCountDown = simSec * generation
-        TotElapsedSec = pygame.time.get_ticks() / 1000
-        elapsedSec = round(SecondsCountDown - TotElapsedSec, 2)
-        secText = font.render(f'Sec: {elapsedSec}', True, (0, 0, 0))
-        screen.blit(secText, (20, 100))
-
         best = sorted(population, key=lambda x: x.fitness, reverse=True)[0]
         best.DrawBest(screen)
         secText = font.render(f'Best: {best.fitness}', True, (0, 0, 0))
-        screen.blit(secText, (20, 140))
+        screen.blit(secText, (20, 100))
+
+        genText = font.render(f'Gen: {generation}', True, (0, 0, 0))
+        screen.blit(genText, (20, 20))
+
+        FramesCountDown = simSec * Settings.FrameRate * generation
+        TotElapsedFrames += 1
+        elapsedSec = round(FramesCountDown - TotElapsedFrames, 2)
+        secText = font.render(f'Frames: {elapsedSec}', True, (0, 0, 0))
+        screen.blit(secText, (20, 60))
 
         pygame.display.flip()  # Flip the display
         pygame.display.update()
@@ -68,16 +63,14 @@ def Simulation(screen, generation, population, simSec):
 
 def main():
     population = [Creature(i) for i in range(Settings.populationSize)]
-    maxGenerations = 1000000000000000000000000000
+    center = [Settings.screenSize / 2, Settings.screenSize / 2]
+    for creature in population: creature.location = center
 
     pygame.init()
     screen = pygame.display.set_mode([Settings.screenSize] * 2)  # Set up the drawing window
     pygame.display.set_caption('Show Text')
 
-    #DNA = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-    #population[0] = Creature(0, DNA=DNA)
-
-    for generation in range(maxGenerations):
+    for generation in range(Settings.maxGenerations):
         Simulation(screen, generation, population, simSec=15)
         average = np.mean([pop.fitness for pop in population])
         print(f'Gen {generation} mean: {average}')

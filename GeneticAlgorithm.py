@@ -38,7 +38,6 @@ def CrossParents(population):
     halfMotherDNA = mother.neuralNetwork.DNA[splitPoint:]
     newDNA = np.concatenate((halfFatherDNA, halfMotherDNA))
     return newDNA
-    #return father.neuralNetwork.DNA
 
 def BattleGenetics(population, arenaSize):
     arena = []
@@ -47,7 +46,6 @@ def BattleGenetics(population, arenaSize):
         if randomParent in arena: continue
         if not randomParent.alive: randomParent.fitness = -100
         mean = np.mean([pop.fitness for pop in population])
-        #if mean > 0 and randomParent.fitness == 0: continue
         arena.append(randomParent)
     sortedArena = sorted(arena, key=lambda x: x.fitness, reverse=True)
     winner = sortedArena[0]

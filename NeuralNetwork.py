@@ -69,7 +69,6 @@ class NeuralNetwork:
         return layer
 
     def sigmoid(self, input):
-        #return 1 / (1 + np.exp(-input)) * 4 - 2
         return 1 / (1 + np.exp(-input)) * 2 - 1
 
     def PrintLayers(self):
