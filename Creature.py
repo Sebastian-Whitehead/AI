@@ -15,11 +15,14 @@ class Creature:
                  color: list = None,
                  DNA: list = None):
         self.id = id
-        if location: self.location = location
-        else: self.RandomLocation()
+        if location:
+            self.location = location
+        else:
+            self.RandomLocation()
         self.size = size
         randomColor = np.random.randint(0, 255, size=(3))
-        self.color = color if color else randomColor
+        # self.color = color if color else randomColor
+        self.color = (2, 129, 27)
         self.neuralNetwork = NeuralNetwork.NeuralNetwork(DNA)
         self.alive = True
         self.action = np.random.random(2) * 2 - 1
@@ -29,6 +32,8 @@ class Creature:
         self.stomach = []
         self.rotation = 0
         self.speed = 2
+        self.completionBonus = 0
+        self.complete = False
 
     def RandomLocation(self):
         randomLocation = np.random.randint(0, Settings.screenSize, size=(2))
@@ -59,6 +64,7 @@ class Creature:
     def eyes(self, foodList: list, screen):
         targetFood = targetDistance = None
         foodSize = foodList[0].size[0]
+        complete = False
         for food in foodList:
             if food.eaten: continue
             if food in self.stomach: continue
@@ -72,7 +78,12 @@ class Creature:
                 targetFood = food
                 targetDistance = distance
 
-        if targetFood is None: return
+        if targetFood is None:
+            if not self.complete:
+                self.completionBonus = Settings.CompletionBonus
+                Settings.CompletionBonus -= 1
+                self.complete = True
+            return
 
         # Draw line from Creature to Food
         foodX, foodY = targetFood.location[0], targetFood.location[1]
@@ -85,10 +96,10 @@ class Creature:
         if abs(targetDirection) > 180: targetDirection += 360
         targetDirection = targetDirection / 180
 
-        targetFood = [targetDirection] # , targetDistance]
-        #if self.id == 0: print("Input:", targetFood)
+        targetFood = [targetDirection]  # , targetDistance]
+        # if self.id == 0: print("Input:", targetFood)
         self.action = self.neuralNetwork.calculateNetwork(targetFood)
-        #if self.id == 0: print("Output:", self.action)
+        # if self.id == 0: print("Output:", self.action)
 
     def eat(self, foodList: list):
         for food in foodList:
@@ -109,8 +120,10 @@ class Creature:
     def move(self, screen):
         self.rotation += self.action[0] * Settings.MaxRotPrSec * (1 / Settings.FrameRate)
         self.rotation %= 360
-        self.speed += self.action[1] * 1.5
-        speed = min(abs(self.speed), 3)
+
+        self.speed += self.action[1] * Settings.DeltaSpeed
+        speed = max(min(self.speed, Settings.maxSpeed), Settings.minSpeed)
+
         x = np.cos(math.radians(self.rotation))
         y = np.sin(math.radians(self.rotation))
         newLocation = [x, y]
@@ -119,22 +132,23 @@ class Creature:
 
         center = [Settings.screenSize / 2, Settings.screenSize / 2]
         distance = np.subtract(self.location, center)
-        self.energi = math.sqrt(sum(v**2 for v in distance))
+        self.energi = math.sqrt(sum(v ** 2 for v in distance))
         self.energi = abs(speed)
 
-        #if self.location[0] <= self.size + 5: self.alive = False
-        #if self.location[1] <= self.size + 5: self.alive = False
-        #if self.location[0] >= Settings.screenSize - self.size - 5: self.alive = False
-        #if self.location[1] >= Settings.screenSize - self.size - 5: self.alive = False
+        # if self.location[0] <= self.size + 5: self.alive = False
+        # if self.location[1] <= self.size + 5: self.alive = False
+        # if self.location[0] >= Settings.screenSize - self.size - 5: self.alive = False
+        # if self.location[1] >= Settings.screenSize - self.size - 5: self.alive = False
 
     def DrawBest(self, screen):
         if not self.alive: return
         pygame.draw.circle(screen, [200, 0, 0], self.location, self.size + 2, width=0)
 
     def CalculateFitness(self):
-        #self.fitness = self.eaten / self.energi
-        self.fitness = round(self.fitness, 5)
-        self.fitness = self.eaten
+        # self.fitness = self.eaten / self.energi
+        # self.fitness = round(self.fitness, 5)
+        self.fitness = self.eaten + self.completionBonus
+
 
 if __name__ == "__main__":
     creature = Creature()

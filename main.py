@@ -47,9 +47,9 @@ def Simulation(screen, generation, population, simSec):
         genText = font.render(f'Gen: {generation}', True, (0, 0, 0))
         screen.blit(genText, (20, 20))
 
-        FramesCountDown = simSec * Settings.FrameRate * generation
+        FramesCountDown = simSec * Settings.FrameRate
         TotElapsedFrames += 1
-        elapsedSec = round(FramesCountDown - TotElapsedFrames, 2)
+        elapsedSec = round(FramesCountDown - (TotElapsedFrames / max(generation, 1)), 0)
         secText = font.render(f'Frames: {elapsedSec}', True, (0, 0, 0))
         screen.blit(secText, (20, 60))
 
@@ -71,6 +71,7 @@ def main():
     pygame.display.set_caption('Show Text')
 
     for generation in range(Settings.maxGenerations):
+        Settings.CompletionBonus = Settings.populationSize
         Simulation(screen, generation, population, simSec=15)
         average = np.mean([pop.fitness for pop in population])
         print(f'Gen {generation} mean: {average}')
