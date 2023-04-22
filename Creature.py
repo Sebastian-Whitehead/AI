@@ -20,14 +20,14 @@ class Creature:
         else:
             self.RandomLocation()
         self.size = size
-        randomColor = np.random.randint(0, 255, size=(3))
+        # randomColor = np.random.randint(0, 255, size=(3))
         # self.color = color if color else randomColor
         self.color = (2, 129, 27)
         self.neuralNetwork = NeuralNetwork.NeuralNetwork(DNA)
         self.alive = True
         self.action = np.random.random(2) * 2 - 1
         self.eaten = 0
-        self.energi = 0
+        self.energy = 0
         self.fitness = 0
         self.stomach = []
         self.rotation = 0
@@ -132,8 +132,8 @@ class Creature:
 
         center = [Settings.screenSize / 2, Settings.screenSize / 2]
         distance = np.subtract(self.location, center)
-        self.energi = math.sqrt(sum(v ** 2 for v in distance))
-        self.energi = abs(speed)
+        self.energy = math.sqrt(sum(v ** 2 for v in distance))
+        self.energy = abs(speed)
 
         # if self.location[0] <= self.size + 5: self.alive = False
         # if self.location[1] <= self.size + 5: self.alive = False
