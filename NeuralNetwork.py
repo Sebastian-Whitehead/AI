@@ -85,10 +85,13 @@ class NeuralNetwork:
 
 
 if __name__ == "__main__":
-    DNA = [-0.83022046,  0.44317445, -0.65713954, -0.35838965, -0.73220725, -0.06549296,
-      0.13006164, -0.61775492, -0.51673575,  0.40817964, -0.74359962,  0.94213346,
-      0.4826172,   0.16676537, -0.21516564, -0.6917134,  -0.54550664]
+    nodes = 0
+    structure = NeuralNetwork.structure
+    for i in range(len(structure) - 1):
+        out = structure[i + 1]
+        nodes += structure[i] * out + out
+    randomDNA = np.random.random(nodes)
     #DNA = ["w1", "w2", "b1", "w3", "w4", "b2", "w5", "w6", "b3", "w7", "w8", "w9", "b4", "w10", "w11", "w12", "b5"]
-    nn = NeuralNetwork(DNA)
+    nn = NeuralNetwork(randomDNA)
     print(nn)
     print(nn.calculateNetwork([0.2, 0.1]))
