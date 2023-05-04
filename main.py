@@ -41,6 +41,7 @@ def Simulation(screen, generation, population, simSec):
 
         best = sorted(population, key=lambda x: x.fitness, reverse=True)[0]
         best.DrawBest(screen)
+        best.neuralNetwork.ShowNN(screen)
         secText = font.render(f'Best: {best.fitness}', True, (0, 0, 0))
         screen.blit(secText, (20, 100))
 
