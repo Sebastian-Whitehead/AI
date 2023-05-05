@@ -20,4 +20,4 @@ foodCount = 100
 foodSize = 5
 foodColor = (0, 255, 40)
 
-CompletionBonus = 50;
+CompletionBonus = 50
