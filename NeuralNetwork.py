@@ -60,6 +60,7 @@ class NeuralNetwork:
         return layerValues  # Return final layer
 
     def calculateLayer(self, inputValues, weights, bias):  # Calculate layer (x*w+b=y)
+        #layer = np.matmul(inputValues, weights)
         layer = np.multiply(inputValues, weights)
         layer = np.add(layer, bias)
         layer = np.sum(layer, axis=1)

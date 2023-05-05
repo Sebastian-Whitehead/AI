@@ -1,5 +1,4 @@
 import pygame
-
 import Settings
 from Creature import *
 from Food import *
